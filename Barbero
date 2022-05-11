@@ -1,0 +1,114 @@
+from threading import Thread, Lock, Event
+import time, random
+
+mutex = Lock()
+
+#Intervalo en segundos
+clienteMin = 5
+clienteMax = 15
+cortePeloDuracionMin = 3
+cortePeloDuracionMax = 15
+
+class Barberia:
+	clientesEsperando = []
+
+	def __init__(self, barbero, numeroAsientos):
+		self.barbero = barbero
+		self.numeroAsientos = numeroAsientos
+		print('Barbero iniciado con {0} asientos'.format(numeroAsientos))
+		print('Customer min interval {0}'.format(clienteMin))
+		print('Customer max interval {0}'.format(clienteMax))
+		print('Haircut min duration {0}'.format(cortePeloDuracionMin))
+		print('Haircut max duration {0}'.format(cortePeloDuracionMax))
+		print('---------------------------------------')
+
+	def barberiaAbierta(self):
+		print('Barberia abierta')
+		workingThread = Thread(target = self.barberoTrabaja)
+		workingThread.start()
+
+	def barberoTrabaja(self):
+		while True:
+			mutex.acquire()
+
+			if len(self.clientesEsperando) > 0:
+				c = self.clientesEsperando[0]
+				del self.clientesEsperando[0]
+				mutex.release()
+				self.barbero.cutHair(c)
+			else:
+				mutex.release()
+				print('Aaah, todo hecho, a dormir')
+				barbero.sleep()
+				print('Barbero despierta')
+	
+	def enterBarberShop(self, cliente):
+		mutex.acquire()
+		print('>> {0} entra a la barberia y busca sitio'.format(cliente.name))
+
+		if len(self.waitingCustomers) == self.numberOfSeats:
+			print 'Waiting room is full, {0} is leaving.'.format(customer.name)
+			mutex.release()
+		else:
+			print '{0} sat down in the waiting room'.format(customer.name)	
+			self.waitingCustomers.append(c)	
+			mutex.release()
+			barber.wakeUp()
+
+class Cliente:
+	def __init__(self, name):
+		self.name = name
+
+class Barberia:
+	barberWorkingEvent = Event()
+
+	def sleep(self):
+		self.barberWorkingEvent.wait()
+
+	def wakeUp(self):
+		self.barberWorkingEvent.set()
+
+	def cutHair(self, customer):
+		#establecer barbero como ocupado
+		self.barberWorkingEvent.clear()
+
+		print '{0} is having a haircut'.format(customer.name)
+
+		randomHairCuttingTime = random.randrange(haircutDurationMin, haircutDurationMax+1)
+		time.sleep(randomHairCuttingTime)
+		print ('{0} hecho'.format(customer.name))
+
+
+if __name__ == '__main__':
+	clientes = []
+	clientes.append(Cliente('Maria'))
+	clientes.append(Cliente('Sara'))
+	clientes.append(Cliente('Paula'))
+	clientes.append(Cliente('David'))
+	clientes.append(Cliente('Jorge'))
+	clientes.append(Cliente('Javi'))
+	clientes.append(Cliente('Alicia'))
+	clientes.append(Cliente('Sergio'))
+	clientes.append(Cliente('India'))
+	clientes.append(Cliente('Aitana'))
+	clientes.append(Cliente('Mario'))
+	clientes.append(Cliente('Dani'))
+	clientes.append(Cliente('Adri'))
+	clientes.append(Cliente('Alvaro'))
+	clientes.append(Cliente('Valeria'))
+	clientes.append(Cliente('Pablo'))
+	clientes.append(Cliente('Marcos'))
+
+	barbero = Barbero()
+
+	barberia = Barberia(barber, numeroAsientos=3)
+	barberia.barberiaAbierta()
+
+	while len(clientes) > 0:
+		c = clientes.pop()	
+		#Nuevo cliente entra en la barberia
+		barberia.enterBarberShop(c)
+		customerInterval = random.randrange(clienteMin,clienteMax+1)
+		time.sleep(customerInterval)
+
+		
